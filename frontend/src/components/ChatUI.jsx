@@ -70,12 +70,12 @@ function Message({ message, index, onViewInsights }) {
       </div>
 
       {/* Content column */}
-      <div className={`flex flex-col gap-1 ${isUser ? 'items-end' : 'items-start'} max-w-[72%]`}>
+      <div className={`flex flex-col gap-1.5 ${isUser ? 'items-end' : 'items-start'} max-w-[75%]`}>
         <div
-          className={`rounded-2xl px-4 py-3 text-[13.5px] ${
+          className={`rounded-3xl px-6 py-4 text-[14px] leading-relaxed ${
             isUser
-              ? 'bg-accent-soft text-text-primary rounded-tr-md'
-              : 'card text-text-primary rounded-tl-md'
+              ? 'bubble-user text-text-primary rounded-tr-lg'
+              : 'bubble-agent text-text-primary rounded-tl-lg'
           }`}
         >
           <div className="message-content whitespace-pre-wrap">
@@ -152,13 +152,13 @@ function EmptyState({ onPromptClick }) {
       </div>
 
       {/* Quick prompts */}
-      <div className="flex flex-wrap justify-center gap-2 mt-1 max-w-md">
+      <div className="flex flex-wrap justify-center gap-3 mt-2 max-w-lg">
         {prompts.map((prompt) => (
           <motion.button
             key={prompt}
-            className="card rounded-xl px-3.5 py-2 text-[12px] text-text-muted
+            className="card rounded-xl px-5 py-2.5 text-[12.5px] text-text-muted
                        hover:text-text-secondary hover:shadow-md
-                       transition-all duration-300"
+                       transition-all duration-300 whitespace-nowrap"
             whileHover={{ y: -2, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onPromptClick(prompt)}
@@ -277,7 +277,7 @@ export default function ChatUI() {
       <div className="relative w-full flex flex-col h-dvh max-w-2xl mx-auto" style={{ zIndex: 10 }}>
 
         {/* ── Header ── */}
-        <header className="flex items-center justify-between px-6 py-4 shrink-0">
+        <header className="header-glass flex items-center justify-between px-6 py-4 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center
                           text-sm text-white shadow-sm shadow-accent/15">
@@ -334,7 +334,7 @@ export default function ChatUI() {
         {/* ── Input area ── */}
         <div className="shrink-0 px-6 pb-5 pt-2">
           <form onSubmit={handleSubmit}>
-            <div className="input-glass rounded-2xl flex items-center gap-3 px-5 py-2">
+            <div className="input-glass rounded-2xl flex items-center gap-3 px-5 py-2.5">
               <input
                 ref={inputRef}
                 id="chat-input"
