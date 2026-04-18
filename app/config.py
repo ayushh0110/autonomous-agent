@@ -19,6 +19,7 @@ class Settings:
     """Immutable application settings sourced from environment variables."""
 
     groq_api_key: str = field(repr=False, default="")
+    groq_api_keys: tuple[str, ...] = field(repr=False, default=())
     groq_model: str = "llama-3.1-8b-instant"
     groq_api_url: str = "https://api.groq.com/openai/v1/chat/completions"
     max_agent_steps: int = 4
@@ -38,8 +39,20 @@ class Settings:
 
 def get_settings() -> Settings:
     """Build and validate a Settings instance from the current environment."""
+    primary_key = os.getenv("GROQ_API_KEY", "")
+
+    # Auto-detect all API keys: GROQ_API_KEY, GROQ_API_KEY_2, GROQ_API_KEY_3, ...
+    all_keys: list[str] = []
+    if primary_key:
+        all_keys.append(primary_key)
+    for i in range(2, 10):  # supports up to 9 keys
+        key = os.getenv(f"GROQ_API_KEY_{i}", "")
+        if key:
+            all_keys.append(key)
+
     settings = Settings(
-        groq_api_key=os.getenv("GROQ_API_KEY", ""),
+        groq_api_key=primary_key,
+        groq_api_keys=tuple(all_keys),
         max_agent_steps=int(os.getenv("MAX_AGENT_STEPS", "4")),
         max_tool_calls=int(os.getenv("MAX_TOOL_CALLS", "2")),
         max_plan_steps=int(os.getenv("MAX_PLAN_STEPS", "5")),
@@ -47,5 +60,8 @@ def get_settings() -> Settings:
         max_refinements=int(os.getenv("MAX_REFINEMENTS", "2")),
     )
     settings.validate()
-    logger.info("Settings loaded successfully (model=%s)", settings.groq_model)
+    logger.info(
+        "Settings loaded successfully (model=%s, api_keys=%d)",
+        settings.groq_model, len(all_keys),
+    )
     return settings
