@@ -79,8 +79,16 @@ You MUST respond with ONLY valid JSON in one of these two formats.
 ## RULES
 1. Respond with ONLY valid JSON. No markdown, no explanation outside JSON.
 2. Only two actions exist: "tool_call" and "final_answer". Nothing else.
-3. If you can answer from your own knowledge, use "final_answer" immediately.
-4. Only use a tool when you genuinely need real-time or external information.
+3. **PREFER tools over your own knowledge** when a tool can give a better answer:
+   - Math/calculations → use "calculator"
+   - Translations → use "translate"
+   - Unit conversions → use "unit_converter"
+   - Current time/timezones → use "datetime"
+   - Word definitions → use "dictionary"
+   - Factual lookups (people, places, events) → use "wikipedia"
+   - Current events/news → use "web_search"
+4. Only use "final_answer" from your own knowledge for greetings, opinions, \
+explanations of concepts, or when no tool fits.
 5. Do NOT call the same tool with the same input twice.
 6. After receiving tool results, prefer giving a final_answer over calling more tools.
 7. When citing tool results, weave them naturally into your response — don't just list facts.
