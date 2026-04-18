@@ -39,7 +39,8 @@ class GroqClient:
         self._key_index: int = 0
         self._model: str = settings.groq_model
         self._url: str = settings.groq_api_url
-        self._last_request_time: float = 0.0
+        # Track last-use time PER KEY so each key gets proper rest
+        self._key_last_used: dict[int, float] = {i: 0.0 for i in range(len(self._api_keys))}
         logger.info("GroqClient initialized with %d API key(s)", len(self._api_keys))
 
     # ----- public API -----
@@ -96,7 +97,8 @@ class GroqClient:
         Raises:
             RuntimeError: On network or API errors (after retries exhausted).
         """
-        # ── Proactive throttle: wait if calling too fast ──
+        # ── Pick the most-rested key and throttle if needed ──
+        current_key = self._next_key()
         self._throttle()
 
         payload: dict[str, Any] = {
@@ -110,7 +112,7 @@ class GroqClient:
             payload["response_format"] = {"type": "json_object"}
 
         headers: dict[str, str] = {
-            "Authorization": f"Bearer {self._next_key()}",
+            "Authorization": f"Bearer {current_key}",
             "Content-Type": "application/json",
         }
 
@@ -118,7 +120,7 @@ class GroqClient:
 
         for attempt in range(1, _MAX_RETRIES + 1):
             try:
-                self._last_request_time = time.monotonic()
+                self._mark_key_used()
                 response = httpx.post(
                     self._url,
                     json=payload,
@@ -134,16 +136,16 @@ class GroqClient:
                 body = exc.response.text
 
                 if status == 429 and attempt < _MAX_RETRIES:
-                    # Rotate to next key immediately on rate limit
+                    # Rotate to the most-rested key
                     if len(self._api_keys) > 1:
-                        headers["Authorization"] = f"Bearer {self._next_key()}"
+                        current_key = self._next_key()
+                        headers["Authorization"] = f"Bearer {current_key}"
                         logger.warning(
                             "Rate limited (429) on attempt %d/%d — "
-                            "rotating to next API key",
-                            attempt, _MAX_RETRIES,
+                            "rotating to key %d",
+                            attempt, _MAX_RETRIES, self._key_index + 1,
                         )
-                        # Brief pause then retry with new key
-                        time.sleep(0.5)
+                        time.sleep(1.0)  # brief pause before retry
                     else:
                         delay = self._parse_retry_delay(body, attempt)
                         logger.warning(
@@ -174,23 +176,37 @@ class GroqClient:
     # ----- helpers -----
 
     def _next_key(self) -> str:
-        """Return the next API key in round-robin order."""
-        key = self._api_keys[self._key_index % len(self._api_keys)]
-        self._key_index += 1
-        return key
+        """Pick the API key that has rested the longest (most-rested-first).
+
+        Instead of blind round-robin, this ensures each key gets maximum
+        cooldown between calls.  With 3 keys and 1s gap, each key rests ~3s.
+        """
+        now = time.monotonic()
+        # Find the key with the oldest last-use timestamp
+        best_idx = min(
+            self._key_last_used,
+            key=lambda i: self._key_last_used[i],
+        )
+        self._key_index = best_idx
+        return self._api_keys[best_idx]
+
+    def _mark_key_used(self) -> None:
+        """Record that the current key was just used."""
+        self._key_last_used[self._key_index] = time.monotonic()
 
     def _throttle(self) -> None:
-        """Enforce minimum gap between API calls to prevent rate limiting.
+        """Enforce minimum gap between API calls PER KEY.
 
-        If the last request was made less than _MIN_REQUEST_GAP seconds ago,
+        If the selected key was used less than _MIN_REQUEST_GAP seconds ago,
         sleep for the remaining time. This is proactive — it prevents 429s
         rather than reacting to them.
         """
-        if self._last_request_time > 0:
-            elapsed = time.monotonic() - self._last_request_time
+        last_used = self._key_last_used.get(self._key_index, 0.0)
+        if last_used > 0:
+            elapsed = time.monotonic() - last_used
             if elapsed < _MIN_REQUEST_GAP:
                 wait = _MIN_REQUEST_GAP - elapsed
-                logger.debug("Throttling: waiting %.1fs before next request", wait)
+                logger.debug("Throttling key %d: waiting %.2fs", self._key_index, wait)
                 time.sleep(wait)
 
     @staticmethod

@@ -315,24 +315,41 @@ class Executor:
 
         state.metrics.steps_taken = len(state.step_results)
 
-        # ── Phase 3: Synthesize ──
-        final_answer = self._synthesize(query, state, exec_id)
-        state.metrics.llm_calls += 1  # synthesis LLM call
-
-        # ── Phase 3.5: Generic answer safety check ──
-        final_answer = self._generic_answer_check(query, final_answer, state, exec_id)
-
-        # ── Phase 4: Critic evaluate + refine ──
-        serialized_steps = [sr.to_dict() for sr in state.step_results]
+        # ── Fast-path for direct answers: skip synthesis + critic ──
+        # Simple queries like "2+2", "hello", "what is X" already have
+        # a concise answer from the LLM. Running synthesis + critic just
+        # bloats them unnecessarily.
         plan_descriptions = [ps.step for ps in plan]
-        final_answer, confidence, refinements = self._critique_and_refine(
-            query=query,
-            answer=final_answer,
-            step_results=serialized_steps,
-            plan_steps=plan_descriptions,
-            state=state,
-            exec_id=exec_id,
-        )
+        serialized_steps = [sr.to_dict() for sr in state.step_results]
+
+        if decision.decision_type == "direct_answer" and state.step_results:
+            final_answer = state.step_results[-1].result
+            confidence = "high"
+            refinements = 0
+            fast_msg = (
+                "[EXECUTOR] ⚡ Direct answer — skipping synthesis/critic"
+            )
+            print(fast_msg)
+            logger.info("[%s] %s", exec_id, fast_msg)
+        else:
+            # ── Phase 3: Synthesize ──
+            final_answer = self._synthesize(query, state, exec_id)
+            state.metrics.llm_calls += 1  # synthesis LLM call
+
+            # ── Phase 3.5: Generic answer safety check ──
+            final_answer = self._generic_answer_check(
+                query, final_answer, state, exec_id,
+            )
+
+            # ── Phase 4: Critic evaluate + refine ──
+            final_answer, confidence, refinements = self._critique_and_refine(
+                query=query,
+                answer=final_answer,
+                step_results=serialized_steps,
+                plan_steps=plan_descriptions,
+                state=state,
+                exec_id=exec_id,
+            )
 
         # ── Phase 5: Memory storage (conditional) ──
         self._store_in_memory(query, final_answer, state, confidence, exec_id)
@@ -380,7 +397,12 @@ class Executor:
 
         step_num = step_index + 1
         total = len(state.plan)
-        allow_tools = (plan_step.type == "tool")
+        # Always allow tools — the LLM decides whether to use one.
+        # Tool-typed steps hint that a tool is preferred, but reasoning
+        # steps can also reach for a tool when it would help (calculator,
+        # wikipedia, dictionary, etc.)
+        allow_tools = True
+        require_tool = (plan_step.type == "tool")
 
         step_header = (
             f"\n[EXECUTOR] Step {step_num}/{total} "
@@ -393,7 +415,6 @@ class Executor:
         context = self._build_context(query, state, plan_step)
 
         # ── First attempt ──
-        require_tool = (plan_step.type == "tool")
         agent_result = self._agent.handle_full(
             context, allow_tools=allow_tools, require_tool=require_tool,
         )

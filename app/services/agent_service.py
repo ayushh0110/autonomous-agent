@@ -17,9 +17,15 @@ from app.agent.memory_analyzer import MemoryAnalyzer, MemoryExtraction
 from app.config import Settings, get_settings
 from app.llm.groq_client import GroqClient
 from app.memory.memory_store import MemoryStore
+from app.tools.calculator_tool import CalculatorTool
+from app.tools.datetime_tool import DateTimeTool
+from app.tools.dictionary_tool import DictionaryTool
 from app.tools.search_tool import SearchTool
+from app.tools.translation_tool import TranslationTool
+from app.tools.unit_converter_tool import UnitConverterTool
 from app.tools.weather_tool import WeatherTool
 from app.tools.web_reader import WebReaderTool
+from app.tools.wikipedia_tool import WikipediaTool
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +35,17 @@ def _build_executor() -> tuple[Executor, MemoryAnalyzer]:
     """Construct the Executor + AutonomousExecutor + MemoryAnalyzer."""
     settings: Settings = get_settings()
     llm = GroqClient(settings)
-    tools = [SearchTool(), WebReaderTool(), WeatherTool()]
+    tools = [
+        SearchTool(),
+        WebReaderTool(),
+        WeatherTool(),
+        CalculatorTool(),
+        WikipediaTool(),
+        DictionaryTool(),
+        UnitConverterTool(),
+        DateTimeTool(),
+        TranslationTool(),
+    ]
     agent = Agent(
         llm=llm,
         tools=tools,
@@ -56,16 +72,18 @@ def _build_executor() -> tuple[Executor, MemoryAnalyzer]:
     )
     analyzer = MemoryAnalyzer(llm=llm)
 
+    tool_names = [t.name for t in tools]
     logger.info(
         "Executor ready (max_plan_steps=%d, max_execution_steps=%d, "
         "max_refinements=%d, agent_max_steps=%d, agent_max_tool_calls=%d, "
         "memory_enabled=True, memory_analyzer=True, autonomous=True, "
-        "tools=[web_search, web_reader, weather])",
+        "tools=%s)",
         settings.max_plan_steps,
         settings.max_execution_steps,
         settings.max_refinements,
         settings.max_agent_steps,
         settings.max_tool_calls,
+        tool_names,
     )
     return executor, analyzer
 
