@@ -1,0 +1,10 @@
+frontend/
+node_modules/
+__pycache__/
+*.pyc
+.env
+.git/
+.gitignore
+.vscode/
+*.md
+Procfile

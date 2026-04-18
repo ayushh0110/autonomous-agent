@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* ── Design Tokens ─────────────────────────────────────── */
+@theme {
+  /* Surfaces */
+  --color-surface: #f8f8fa;
+  --color-surface-white: #ffffff;
+  --color-surface-warm: #f3f2f0;
+  --color-surface-hover: #f0eff2;
+
+  /* Borders */
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-border-subtle: rgba(0, 0, 0, 0.04);
+  --color-border-focus: rgba(99, 102, 241, 0.35);
+
+  /* Text */
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #4a4a5e;
+  --color-text-muted: #8b8b9e;
+  --color-text-dim: #b5b5c6;
+  --color-text-ghost: #d0d0da;
+
+  /* Accent */
+  --color-accent: #6366f1;
+  --color-accent-light: #818cf8;
+  --color-accent-soft: rgba(99, 102, 241, 0.08);
+  --color-accent-softer: rgba(99, 102, 241, 0.04);
+
+  /* Semantic */
+  --color-emerald: #34d399;
+  --color-emerald-soft: rgba(52, 211, 153, 0.10);
+  --color-amber: #fbbf24;
+  --color-amber-soft: rgba(251, 191, 36, 0.10);
+  --color-blue: #60a5fa;
+  --color-blue-soft: rgba(96, 165, 250, 0.08);
+  --color-rose: #fb7185;
+  --color-rose-soft: rgba(251, 113, 133, 0.08);
+
+  /* Typography */
+  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'SF Mono', monospace;
+}
+
+/* ── Reset ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.14);
+}
+
+/* ── Cards ─────────────────────────────────────────────── */
+.card {
+  background: var(--color-surface-white);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03),
+              0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.card-elevated {
+  background: var(--color-surface-white);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
+              0 8px 24px rgba(0, 0, 0, 0.03);
+}
+
+/* ── Input ─────────────────────────────────────────────── */
+.input-glass {
+  background: var(--color-surface-white);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03),
+              0 4px 16px rgba(0, 0, 0, 0.02);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.input-glass:focus-within {
+  border-color: rgba(99, 102, 241, 0.25);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03),
+              0 4px 16px rgba(0, 0, 0, 0.02),
+              0 0 0 3px rgba(99, 102, 241, 0.06);
+  transform: scale(1.008);
+}
+
+/* ── Message content ───────────────────────────────────── */
+.message-content {
+  line-height: 1.7;
+  letter-spacing: 0.005em;
+}
+.message-content p { margin-bottom: 0.6em; }
+.message-content p:last-child { margin-bottom: 0; }
+.message-content ul, .message-content ol {
+  margin: 0.4em 0;
+  padding-left: 1.4em;
+}
+.message-content li { margin-bottom: 0.2em; }
+.message-content strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+.message-content code {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-family: var(--font-family-mono);
+}
+
+/* ── Selection ─────────────────────────────────────────── */
+::selection {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--color-text-primary);
+}
