@@ -259,6 +259,35 @@ _TASK_INDICATORS = re.compile(
     re.IGNORECASE,
 )
 
+# Tool-intent indicators — queries that need a specific tool, not just LLM knowledge.
+# These override direct_answer to ensure the agent can use its tools.
+_TOOL_INTENT_INDICATORS = re.compile(
+    r'\b('
+    # Translation
+    r'translate|translation|translated|'
+    r'in japanese|in spanish|in french|in german|in chinese|in korean|'
+    r'in hindi|in arabic|in italian|in portuguese|in russian|'
+    r'in turkish|in dutch|in swedish|in thai|in vietnamese|'
+    r'said in|say in|how to say|how do you say|'
+    # Calculation
+    r'calculate|compute|sqrt|square root|cube root|factorial|'
+    r'log of|logarithm|percent of|percentage|'
+    r'underoot|under root|'
+    r'\d+\s*[\+\-\*\/\^]\s*\d+|'
+    # Unit conversion
+    r'convert\b|to celsius|to fahrenheit|to kelvin|'
+    r'miles to|km to|pounds to|kg to|gallons to|liters to|'
+    r'feet to|inches to|meters to|'
+    # Time / Date
+    r'what time|current time|time in|time zone|timezone|'
+    r'days until|days since|how many days|date today|'
+    # Dictionary
+    r'define\b|definition of|meaning of|synonym|antonym|'
+    r'what does .+ mean'
+    r')\b',
+    re.IGNORECASE,
+)
+
 
 @dataclass(frozen=True)
 class QueryDecision:
@@ -292,8 +321,19 @@ def classify_query(
     is_factual = bool(_FACTUAL_INDICATORS.search(q))
     is_personal = bool(_PERSONAL_INDICATORS.search(q))
     is_task = bool(_TASK_INDICATORS.search(q))
+    needs_tool = bool(_TOOL_INTENT_INDICATORS.search(q))
 
-    # Priority 0: Complex multi-step tasks → autonomous executor
+    # Priority 0: Tool-intent queries — translation, calculation, conversion, etc.
+    # These MUST go through the pipeline so the LLM can use tools.
+    # e.g. "say hello in japanese", "sqrt(44567)", "convert 5 miles to km"
+    if needs_tool:
+        return QueryDecision(
+            decision_type="needs_search",
+            reasoning="Query requires a tool (translate/calculate/convert/datetime/dictionary)",
+            confidence=0.9,
+        )
+
+    # Priority 0.5: Complex multi-step tasks → autonomous executor
     # "plan a trip to Japan", "compare React vs Vue", "find flights and hotels"
     if is_task and not is_personal:
         return QueryDecision(
@@ -302,7 +342,7 @@ def classify_query(
             confidence=0.9,
         )
 
-    # Priority 0.5: Personal / conversational statements → direct answer
+    # Priority 1: Personal / conversational statements → direct answer
     # "my birthday is Dec 1st", "I'm a developer", "hi", "thanks"
     if is_personal and not needs_search and not has_recency:
         return QueryDecision(
