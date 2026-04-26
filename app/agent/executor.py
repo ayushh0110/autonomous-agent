@@ -27,6 +27,7 @@ from dataclasses import dataclass, field
 from typing import Any, Sequence
 
 from app.agent.agent import Agent, classify_query, QueryDecision
+from app.agent.toolforge_router import toolforge_classify, is_toolforge_available
 from app.agent.planner import Planner, PlanStep
 from app.agent.critic import Critic, CriticResult, CriticIssue
 from app.llm.groq_client import GroqClient
@@ -241,14 +242,31 @@ class Executor:
                 logger.info("[%s] %s", exec_id, mem_msg)
 
         # ── Phase 0.5: Query classification (Decision Layer) ──
-        decision = classify_query(
-            query=query,
-            memory_hits=len(memory_entries),
-            has_memory=bool(self._memory and memory_entries),
-        )
+        # Try ToolForge model-based router first (if enabled + GPU available),
+        # fall back to heuristic classifier.
+        decision = None
+        router_source = "heuristic"
+
+        if is_toolforge_available():
+            decision = toolforge_classify(
+                query=query,
+                memory_hits=len(memory_entries),
+                has_memory=bool(self._memory and memory_entries),
+            )
+            if decision is not None:
+                router_source = "toolforge"
+
+        if decision is None:
+            decision = classify_query(
+                query=query,
+                memory_hits=len(memory_entries),
+                has_memory=bool(self._memory and memory_entries),
+            )
+
         decision_msg = (
             f"[DECISION] type={decision.decision_type} | "
             f"confidence={decision.confidence:.2f} | "
+            f"router={router_source} | "
             f"reason={decision.reasoning}"
         )
         print(decision_msg)

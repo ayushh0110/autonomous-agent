@@ -1,0 +1,195 @@
+%-------------------------
+% Resume in LaTeX
+% Author: Ayush Shekhar
+% Based on Jake's resume template
+%-------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Section formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge \scshape Ayush Shekhar} \\ \vspace{1pt}
+    \small +91-7007283478 $|$
+    \href{mailto:shekharayush56@gmail.com}{\underline{shekharayush56@gmail.com}} $|$
+    \href{https://linkedin.com/in/ayush-shekhar}{\underline{LinkedIn}} $|$
+    \href{https://github.com/ayushh0110}{\underline{GitHub}} $|$
+    Lucknow, Uttar Pradesh, India
+\end{center}
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Bhartiya Vidyapeeth University}{Pune, India}
+      {Bachelor of Technology in Information Technology Engineering}{Nov 2021 -- Jun 2025}
+      \resumeItemListStart
+        \resumeItem{CGPA: \textbf{9.05 / 10}}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+%-----------EXPERIENCE-----------
+\section{Professional Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Cognizant Technology Solutions}{India}
+      {Programmer Analyst Trainee}{October 2025 -- Present}
+      \resumeItemListStart
+        \resumeItem{Supported quality validation and release readiness for enterprise healthcare applications deployed for Abbott Healthcare, operating within regulated Life Sciences environments aligned with HIPAA compliance standards.}
+        \resumeItem{Designed scenario-based validation test cases from functional and technical requirements, proactively identifying edge cases across critical workflows handling sensitive healthcare data.}
+        \resumeItem{Collaborated with development and DevOps teams to reproduce environment-specific issues, analyze application logs, and accelerate defect triage and resolution across test and release environments.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Cognizant Technology Solutions}{India}
+      {Engineer Trainee}{June 2025 -- September 2025}
+      \resumeItemListStart
+        \resumeItem{Completed structured enterprise training in Java, Selenium-based automation, API testing with Postman, defect tracking with Jira, cloud fundamentals, and containerization using Docker and Kubernetes.}
+        \resumeItem{Trained on Agile and Scrum practices including sprint planning, daily stand-ups, and SDLC processes.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {CERELABS}{Remote}
+      {Software Development Engineer (Intern)}{June 2024 -- August 2024}
+      \resumeItemListStart
+        \resumeItem{Built \textbf{Llamate}, a tool enabling multi-turn GPT model interactions with user-configurable parameters; designed the frontend in \textbf{React + TypeScript} and the backend with \textbf{FastAPI}.}
+        \resumeItem{Deployed on cloud infrastructure ensuring scalability and fault tolerance; collaborated in an agile environment to implement parameter-tuning features.}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{Key Projects}
+
+  \resumeSubHeadingListStart
+
+    %--- Autonomous AI Agent ---
+    \resumeProjectHeading
+      {\textbf{Autonomous AI Agent} $|$ \emph{Python, FastAPI, React, Groq LLaMA 3.1, sentence-transformers, Docker} $|$ \href{https://autonomous-agent-ten.vercel.app/}{\underline{Live Demo}}}{}
+      \resumeItemListStart
+        \resumeItem{Architected a \textbf{Planner--Executor--Critic agentic pipeline} from scratch: Planner generates typed execution steps, Executor orchestrates multi-tool calls with early stopping and weak-result recovery, and Critic evaluates grounding, faithfulness, and completeness with iterative answer refinement.}
+        \resumeItem{Built a \textbf{zero-LLM heuristic query classifier} routing across 4 decision paths (direct, search, memory, autonomous) — eliminating redundant API calls; designed an \textbf{AutonomousExecutor} for complex tasks with LLM-driven goal decomposition, aspect-level research, and coverage gating.}
+        \resumeItem{Designed a \textbf{hybrid semantic memory (RAG)} system using \texttt{all-MiniLM-L6-v2} vector search blended with Jaccard keyword re-ranking, time-decay scoring, and deduplication; integrated \textbf{9 production tools} behind a schema-validated \texttt{ToolRegistry} with request-scoped caching.}
+        \resumeItem{Deployed full-stack on \textbf{Docker + Hugging Face Spaces} (backend) and \textbf{Vercel} (React frontend); implemented multi-key Groq API rotation with proactive per-key throttling and automatic retry on rate limits; covered end-to-end with \textbf{60+ unit tests} (pytest).}
+      \resumeItemListEnd
+
+    %--- OptiBlend ---
+    \resumeProjectHeading
+      {\textbf{OptiBlend: Static + ML-Driven Code Optimizer} $|$ \emph{Python, AST, PyFlakes, CodeBERT, Tkinter, Matplotlib}}{}
+      \resumeItemListStart
+        \resumeItem{Built a two-pass \textbf{AST-based pipeline} to eliminate dead code (unused imports, variables, branches) and hoist loop-invariants, improving runtime performance by up to \textbf{35\%}.}
+        \resumeItem{Implemented \textbf{semantic clone detection} via AST normalization (variable/literal mapping, control-flow hashing) to merge duplicated functions, reducing code size by \textbf{20\%}.}
+        \resumeItem{Fine-tuned \textbf{Microsoft CodeBERT} on the Py150 corpus (10K train / 5K eval) achieving macro \textbf{F1 $\approx$ 0.82}, reducing manual code-review time by 40\%; developed a Tkinter GUI with side-by-side viewers and Matplotlib "before vs.\ after" metric charts.}
+      \resumeItemListEnd
+
+    %--- Compressive Strength Predictor ---
+    \resumeProjectHeading
+      {\textbf{Compressive Strength Predictor} $|$ \emph{Random Forest, Flask, AWS EC2, Android Studio}}{}
+      \resumeItemListStart
+        \resumeItem{Developed an \textbf{Android mobile application} backed by a Flask REST API on AWS EC2 for real-time concrete compressive strength predictions from material composition inputs.}
+        \resumeItem{Trained a \textbf{Random Forest regression model} on concrete composition data, achieving an \textbf{R$^2$ = 0.8334}.}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------TECHNICAL SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: Python, Java, JavaScript, TypeScript, C, C++, SQL} \\
+     \textbf{AI / ML}{: LLMs, Agentic AI, NLP, Deep Learning, Transformers (HuggingFace), RAG, Vector Search, scikit-learn, TensorFlow} \\
+     \textbf{Frameworks \& Tools}{: FastAPI, React, Flask, Docker, Kubernetes, AWS, Git, Postman, Jira, Power BI} \\
+     \textbf{Developer Tools}{: VS Code, PyCharm, Figma, Anaconda, Blender 3D, MATLAB} \\
+     \textbf{Operating Systems}{: Linux, Windows}
+    }}
+ \end{itemize}
+
+%-----------CERTIFICATIONS-----------
+\section{Certifications}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Cloud Computing} -- NPTEL, IIT Kharagpur \\
+     \textbf{Cloud Computing and Distributed Systems} -- NPTEL, IIT Kanpur \\
+     \textbf{AWS Cloud Technical Essentials} -- Coursera \\
+     \textbf{Google Cloud Fundamentals: Core Infrastructure} -- Coursera \\
+     \textbf{Meta Front-End Developer (React)} -- Coursera
+    }}
+ \end{itemize}
+
+%-------------------------------------------
+\end{document}

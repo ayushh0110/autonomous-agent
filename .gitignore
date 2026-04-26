@@ -35,3 +35,10 @@ Thumbs.db
 
 # ── Model cache ──
 .cache/
+
+# ── Model weights / adapters (too large for git) ──
+checkpoints/
+best_adapter/
+*.safetensors
+*.bin
+*.pt
