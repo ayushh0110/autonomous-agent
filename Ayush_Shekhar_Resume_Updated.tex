@@ -157,12 +157,30 @@
         \resumeItem{Fine-tuned \textbf{Microsoft CodeBERT} on the Py150 corpus (10K train / 5K eval) achieving macro \textbf{F1 $\approx$ 0.82}, reducing manual code-review time by 40\%; developed a Tkinter GUI with side-by-side viewers and Matplotlib "before vs.\ after" metric charts.}
       \resumeItemListEnd
 
-    %--- Compressive Strength Predictor ---
+    %--- ToolForge ---
     \resumeProjectHeading
-      {\textbf{Compressive Strength Predictor} $|$ \emph{Random Forest, Flask, AWS EC2, Android Studio}}{}
+      {\textbf{ToolForge: Fine-Tuned Tool Router} $|$ \emph{Qwen2.5-7B, QLoRA, PEFT, Transformers, W\&B, Gradio} $|$ \href{https://github.com/ayushh0110/toolforge}{\underline{GitHub}}}{2026}
       \resumeItemListStart
-        \resumeItem{Developed an \textbf{Android mobile application} backed by a Flask REST API on AWS EC2 for real-time concrete compressive strength predictions from material composition inputs.}
-        \resumeItem{Trained a \textbf{Random Forest regression model} on concrete composition data, achieving an \textbf{R$^2$ = 0.8334}.}
+        \resumeItem{Built an end-to-end \textbf{tool-routing engine}: distilled 1,173 training examples from Gemini 2.5 Flash using a round-robin pool of 6 API keys, then fine-tuned \textbf{Qwen2.5-7B} with QLoRA (4-bit NF4) achieving \textbf{86.2\% routing accuracy} — a \textbf{15\% improvement} over the regex heuristic baseline.}
+        \resumeItem{Ran a \textbf{4-run ablation study} (Mistral vs Qwen, LoRA r=16 vs r=64) tracked on Weights \& Biases; selected the optimal configuration via eval loss convergence; integrated the adapter into the Autonomous Agent as a feature-flagged drop-in replacement for the heuristic classifier.}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------OPEN SOURCE-----------
+\section{Open-Source Contributions}
+  \resumeSubHeadingListStart
+
+    \resumeProjectHeading
+      {\textbf{LiteLLM} (BerriAI) $|$ \emph{5.4K+ stars, LLM proxy gateway} $|$ \href{https://github.com/BerriAI/litellm/pull/26247}{\underline{PR \#26247}}}{2026}
+      \resumeItemListStart
+        \resumeItem{Fixed a bug in the \textbf{MCP semantic filter hook} that silently dropped all native (non-MCP) tools during semantic filtering; added guard logic to skip filtering for all-native requests and contributed regression tests, restoring tool availability across mixed-provider configurations.}
+      \resumeItemListEnd
+
+    \resumeProjectHeading
+      {\textbf{Agno} (formerly Phidata) $|$ \emph{20K+ stars, agentic AI framework} $|$ \href{https://github.com/agno-agi/agno/pulls?q=author\%3Aayushh0110}{\underline{5 Merged PRs}}}{2025--2026}
+      \resumeItemListStart
+        \resumeItem{Contributed 5 merged PRs: fixed \textbf{Milvus vector DB} reranker pipeline (\#5200), corrected \texttt{json\_contains\_any} filter syntax (\#5698), integrated \textbf{Crawl4AI} web-scraping toolkit (\#5859), and fixed \textbf{Gemini timeout propagation} through \texttt{HttpOptions} merge logic (\#7629, \#7632).}
       \resumeItemListEnd
 
   \resumeSubHeadingListEnd
@@ -171,11 +189,10 @@
 \section{Technical Skills}
  \begin{itemize}[leftmargin=0.15in, label={}]
     \small{\item{
-     \textbf{Languages}{: Python, Java, JavaScript, TypeScript, C, C++, SQL} \\
-     \textbf{AI / ML}{: LLMs, Agentic AI, NLP, Deep Learning, Transformers (HuggingFace), RAG, Vector Search, scikit-learn, TensorFlow} \\
-     \textbf{Frameworks \& Tools}{: FastAPI, React, Flask, Docker, Kubernetes, AWS, Git, Postman, Jira, Power BI} \\
-     \textbf{Developer Tools}{: VS Code, PyCharm, Figma, Anaconda, Blender 3D, MATLAB} \\
-     \textbf{Operating Systems}{: Linux, Windows}
+     \textbf{AI / ML}{: LLM Fine-Tuning (QLoRA, PEFT), Agentic AI, RAG, Vector Search, Transformers (HuggingFace), NLP, scikit-learn, TensorFlow, W\&B} \\
+     \textbf{Languages}{: Python, Java, JavaScript, TypeScript, C++, SQL} \\
+     \textbf{Systems \& Infra}{: FastAPI, React, Docker, Kubernetes, AWS, Linux, Git} \\
+     \textbf{Data \& Tools}{: sentence-transformers, Groq, Gradio, Postman, Jira}
     }}
  \end{itemize}
 
@@ -183,11 +200,9 @@
 \section{Certifications}
  \begin{itemize}[leftmargin=0.15in, label={}]
     \small{\item{
-     \textbf{Cloud Computing} -- NPTEL, IIT Kharagpur \\
-     \textbf{Cloud Computing and Distributed Systems} -- NPTEL, IIT Kanpur \\
-     \textbf{AWS Cloud Technical Essentials} -- Coursera \\
-     \textbf{Google Cloud Fundamentals: Core Infrastructure} -- Coursera \\
-     \textbf{Meta Front-End Developer (React)} -- Coursera
+     Cloud Computing (NPTEL, IIT Kharagpur) $|$
+     AWS Cloud Technical Essentials (Coursera) $|$
+     Meta Front-End Developer -- React (Coursera)
     }}
  \end{itemize}
 
